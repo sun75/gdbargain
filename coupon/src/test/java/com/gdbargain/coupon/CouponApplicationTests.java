@@ -1,10 +1,10 @@
-package com.gdshop.product;
+package com.gdbargain.coupon;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ProductApplicationTests {
+class CouponApplicationTests {
 
     @Test
     void contextLoads() {

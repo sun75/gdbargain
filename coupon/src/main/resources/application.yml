@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    username: root
+    password: n
+    url: jdbc:mysql://localhost:3306/shopcoupon
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+  application:
+    name: coupon #为注册中心的每个服务起名字
+mybatis-plus:
+  mapper-locations: classpath:/mapper/**/*.xml
+  global-config:
+    db-config:
+      id-type: auto
+server:
+  port: 7000

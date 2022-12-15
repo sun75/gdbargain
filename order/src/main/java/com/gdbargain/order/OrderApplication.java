@@ -1,13 +1,13 @@
-package com.gdbargain.common.ware;
+package com.gdbargain.order;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class WareApplication {
+public class OrderApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(WareApplication.class, args);
+        SpringApplication.run(OrderApplication.class, args);
     }
 
 }

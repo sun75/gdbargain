@@ -1,6 +1,6 @@
-package com.gdbargain.common.member;
+package com.gdbargain.member;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
