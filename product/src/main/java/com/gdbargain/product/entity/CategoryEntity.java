@@ -1,10 +1,13 @@
 package com.gdbargain.product.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -56,5 +59,13 @@ public class CategoryEntity implements Serializable {
 	 * 商品数量
 	 */
 	private Integer productCount;
+
+	/**
+	 * children不是数据表里面的属性
+	 * 新添加的变量在数据表里面不存在
+	 * 将当前菜单的子分类保存在children里面
+	 */
+	@TableField(exist = false)
+	private List<CategoryEntity> children;
 
 }
