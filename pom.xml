@@ -19,7 +19,6 @@
         <module>product</module>
         <module>ware</module>
         <module>renren-fast</module>
-        <module>renren-generator</module>
         <module>common</module>
         <module>third-party</module>
         <module>gateway</module>

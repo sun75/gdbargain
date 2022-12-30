@@ -23,9 +23,9 @@
         <httpcore.version>4.4.12</httpcore.version>
         <commons.lang.version>2.6</commons.lang.version>
         <servlet.version>2.5</servlet.version>
-<!--        <alibaba.cloud.nacos.version>2.1.0.RELEASE</alibaba.cloud.nacos.version>-->
+        <alibaba.cloud.nacos.version>1.4.2</alibaba.cloud.nacos.version>
         <spring.cloud.bootstrap.version>3.1.4</spring.cloud.bootstrap.version>
-        <spring.cloud.alibaba.version>2.2.1.RELEASE</spring.cloud.alibaba.version>
+        <spring.cloud.alibaba.version>2.2.6.RELEASE</spring.cloud.alibaba.version>
     </properties>
 
     <dependencies>
@@ -64,8 +64,8 @@
         </dependency>
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-alibaba-nacos-discovery</artifactId>
-<!--            <version>${alibaba.cloud.nacos.version}</version>-->
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+<!--            <version>1.4.2</version>-->
         </dependency>
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
