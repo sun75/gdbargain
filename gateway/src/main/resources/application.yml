@@ -20,22 +20,12 @@ spring:
 #          predicates:
 #            - Path=/a/**
 
-#        - id: a_route
-#          uri: http://localhost:8080/renren-fast/**
-#          predicates:
-#            - Path=/api/**
-
-#        - id: product_route
-#          uri: http://localhost:10000/product/category/list/tree
-#          uri: https://www.qq.com
-#          uri: http://localhost:8080/renren-fast/captcha.jpg?uuid=830e5fc9-3e7a-4c05-8f02-f410dbad31af
-#          uri: lb://renren-fast
-
-#          predicates:
-#            - Path=/api/**
-#            - Method=get
-#          filter:
-#            - RewritePath=/api/(?<segment>.*),/renren-fast/$\{segment} # 重写路径
+        - id: product_route
+          uri: lb://product
+          predicates:
+            - Path=/api/product/**
+          filters:
+            - RewritePath=/api/(?<segment>.*),/$\{segment} # 重写路径
 
         - id: admin_route
           uri: lb://renren-fast
