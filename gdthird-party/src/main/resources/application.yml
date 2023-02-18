@@ -1,0 +1,30 @@
+#yml是注册中心的配置
+spring:
+  cloud:
+    alicloud:
+      access-key: LTAI5t6XxQsYjpbSQ6miAufS
+      secret-key: QkMCOsohU2OjUdYzUkZSI6x54ViFpt
+      oss:
+        endpoint: oss-cn-beijing.aliyuncs.com
+        bucket: gdbargainshop
+
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+#      config:
+#        namespace: d1e8a469-9898-42a0-9ed6-7d227c15ecce
+  application:
+    name: gdthird-party
+
+server:
+  port: 30000
+
+
+
+#  datasource:
+#    username: root
+#    password: n
+#    url: jdbc:mysql://localhost:3306/shopproduct
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+
+debug: true

@@ -22,3 +22,5 @@ server:
 logging:
   level:
     com.gdbargain: debug
+include-binding-errors: always
+include-message: always

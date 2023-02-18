@@ -20,7 +20,7 @@
         <module>ware</module>
         <module>renren-fast</module>
         <module>common</module>
-        <module>third-party</module>
         <module>gateway</module>
+        <module>gdthird-party</module>
     </modules>
 </project>

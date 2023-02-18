@@ -27,6 +27,13 @@ spring:
           filters:
             - RewritePath=/api/(?<segment>.*),/$\{segment} # 重写路径
 
+        - id: third_party_route
+          uri: lb://gdthird-party  #所有第三方请求都负载均衡到/gdthird-party这个服务
+          predicates:
+            - Path=/api/gdthirdparty/**
+          filters:
+            - RewritePath=/api/gdthirdparty/(?<segment>.*),/gdthirdparty/$\{segment} # 重写路径
+
         - id: admin_route
           uri: lb://renren-fast
           predicates:
