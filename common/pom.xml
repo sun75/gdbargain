@@ -61,7 +61,8 @@
             <artifactId>commons-lang</artifactId>
             <version>${commons.lang.version}</version>
         </dependency>
-<!--servlet api一般tomcat里面都自带，所以打包的时候provided，表示目标环境已存在-->
+<!--servlet api一般tomcat里面都自带，provided表示目标环境已存在
+所以打包的时候不用带上servlet API-->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>

@@ -1,5 +1,7 @@
 package com.gdbargain.product.service.impl;
 
+import com.gdbargain.product.service.CategoryBrandRelationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,10 +19,14 @@ import com.gdbargain.common.utils.Query;
 import com.gdbargain.product.dao.CategoryDao;
 import com.gdbargain.product.entity.CategoryEntity;
 import com.gdbargain.product.service.CategoryService;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service("categoryService")
 public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity> implements CategoryService {
+
+    @Autowired
+    CategoryBrandRelationService categoryBrandRelationService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -87,6 +93,19 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         List<Long> parentPath = findParentPath(catelogId, paths);
         Collections.reverse(parentPath);
         return parentPath.toArray(new Long[parentPath.size()]);
+    }
+
+    /**
+     * 级联更新所有关联的数据
+     * @param category
+     */
+    @Transactional
+    @Override
+    public void updateCascade(CategoryEntity category) {
+        //更新自己
+        this.updateById(category);
+        //更新关联表
+        categoryBrandRelationService.updateCategory(category.getCatId(), category.getName());
     }
 
     //当前分类如果还有父分类，就继续找

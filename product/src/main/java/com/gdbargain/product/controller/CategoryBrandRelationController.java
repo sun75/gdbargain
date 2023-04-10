@@ -1,14 +1,17 @@
 package com.gdbargain.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.gdbargain.product.entity.BrandEntity;
+import com.gdbargain.product.service.AttrGroupService;
+import com.gdbargain.product.vo.AttrGroupWithAttrsVO;
+import com.gdbargain.product.vo.BrandVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.gdbargain.product.entity.CategoryBrandRelationEntity;
 import com.gdbargain.product.service.CategoryBrandRelationService;
@@ -30,6 +33,9 @@ public class CategoryBrandRelationController {
     @Autowired
     private CategoryBrandRelationService categoryBrandRelationService;
 
+    @Autowired
+    private AttrGroupService attrGroupService;
+
     /**
      * 列表
      */
@@ -38,6 +44,18 @@ public class CategoryBrandRelationController {
         PageUtils page = categoryBrandRelationService.queryPage(params);
 
         return R.ok().put("page", page);
+    }
+
+    /**
+     * 获取当前品牌所有分类的列表
+     * 查询条件：brandId=指定的值
+     */
+    @GetMapping("/catelog/list")
+    public R cateloglist(@RequestParam("brandId") Long brandId){
+        List<CategoryBrandRelationEntity> data = categoryBrandRelationService.list(
+          new QueryWrapper<CategoryBrandRelationEntity>().eq("brand_id", brandId)
+        );
+        return R.ok().put("data", data);
     }
 
 
@@ -56,7 +74,7 @@ public class CategoryBrandRelationController {
      */
     @RequestMapping("/save")
     public R save(@RequestBody CategoryBrandRelationEntity categoryBrandRelation){
-		categoryBrandRelationService.save(categoryBrandRelation);
+		categoryBrandRelationService.saveDetail(categoryBrandRelation);
 
         return R.ok();
     }
@@ -81,4 +99,39 @@ public class CategoryBrandRelationController {
         return R.ok();
     }
 
+    /**
+     * /product/categorybrandrelation/brands/list
+     * 参数：catId
+     * 1.controller:处理请求，接收和校验数据
+     * 2.service:接收controller传来的数据，进行业务处理
+     * 3.controller:接收service处理完的数据，封装成页面指定的vo
+     */
+    @GetMapping
+    public R relationBrandsList(@RequestParam(value = "catId", required = true)Long catId){
+        //1.接收数据
+        List<BrandEntity> vos = categoryBrandRelationService.getBrandsByCatId(catId);
+        //2.交给service
+        List<BrandVO> collect = vos.stream().map((item) -> {
+            BrandVO brandVO = new BrandVO();
+            brandVO.setBrandId(item.getBrandId());
+            brandVO.setBrandName(item.getName());
+            return brandVO;
+        }).collect(Collectors.toList());
+        //3.处理返回
+        return R.ok().put("data", collect);
+    }
+
+    /**
+     * 获取当前分类下的所有属性分组，还要带上它所属的属性
+     * /product/attrgroup/{catelogId}/withattr
+     */
+    @GetMapping("/{catelogId}/withattr")
+    public R getAttrGroupWithAttrs(@PathVariable("catelogId") Long catelogId){
+        //1.查出当前分类下的所有分组
+
+        //2.查出每个属性分组下面的所有属性
+        List<AttrGroupWithAttrsVO> vos = attrGroupService.getAttrGroupWithAttrsByCatelogId(catelogId);
+
+        return R.ok().put("data", vos);
+    }
 }
