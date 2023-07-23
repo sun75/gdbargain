@@ -10,6 +10,7 @@ import com.gdbargain.product.service.AttrAttrgroupRelationService;
 import com.gdbargain.product.service.AttrService;
 import com.gdbargain.product.service.CategoryService;
 import com.gdbargain.product.vo.AttrGroupRelationVO;
+import com.gdbargain.product.vo.AttrGroupWithAttrsVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -139,5 +140,17 @@ public class AttrGroupController {
     public R addRelation(@RequestBody List<AttrGroupRelationVO> vos){
         relationService.saveBatch(vos);
         return R.ok();
+    }
+
+    /**
+     * 获取分类ID下所有分组的属性
+     */
+    @GetMapping("/{catelogId}/withattr")
+    public R getAttrGroupWithAttrs(@PathVariable("catelogId") Long catelogId){
+        //1.查出当前分类下的所有分组
+        List<AttrGroupWithAttrsVO> vos = attrGroupService.getAttrGroupWithAttrsByCatelogId(catelogId);
+        //2.查出每个分组的所有属性
+
+        return R.ok().put("data", vos);
     }
 }

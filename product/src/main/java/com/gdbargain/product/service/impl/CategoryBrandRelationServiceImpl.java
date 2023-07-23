@@ -84,6 +84,7 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
      */
     @Override
     public List<BrandEntity> getBrandsByCatId(Long catId) {
+        //categoryBrandRelationDao或者写this.baseMapper也是一样的
         List<CategoryBrandRelationEntity> catelogId = categoryBrandRelationDao.selectList(new QueryWrapper<CategoryBrandRelationEntity>().eq("catelog_id", catId));
         //获取详细信息
         List<BrandEntity> collect = catelogId.stream().map((item) -> {
