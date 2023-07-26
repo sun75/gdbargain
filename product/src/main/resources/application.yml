@@ -10,6 +10,8 @@ spring:
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss   #指定格式化的规则
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
   global-config:

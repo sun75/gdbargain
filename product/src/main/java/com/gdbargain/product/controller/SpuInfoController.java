@@ -5,11 +5,7 @@ import java.util.Map;
 
 import com.gdbargain.product.vo.SpuSaveVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.gdbargain.product.entity.SpuInfoEntity;
 import com.gdbargain.product.service.SpuInfoService;
@@ -37,6 +33,13 @@ public class SpuInfoController {
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = spuInfoService.queryPage(params);
+
+        return R.ok().put("page", page);
+    }
+
+    @GetMapping("/spuinfolist")
+    public R spuInfoList(@RequestParam Map<String, Object> params){
+        PageUtils page = spuInfoService.queryPageByCondition(params);
 
         return R.ok().put("page", page);
     }
