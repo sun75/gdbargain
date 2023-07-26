@@ -19,6 +19,12 @@ spring:
 #          uri: http://localhost:8080/renren-fast/captcha.jpg?uuid=631bef5f-de70-4d6c-8a1e-8df3a144043d
 #          predicates:
 #            - Path=/a/**
+        - id: ware_route
+          uri: lb://ware
+          predicates:
+            - Path=/api/ware/**
+          filters:
+            - RewritePath=/api/(?<segment>.*),/$\{segment} # 重写路径
 
         - id: product_route
           uri: lb://product
