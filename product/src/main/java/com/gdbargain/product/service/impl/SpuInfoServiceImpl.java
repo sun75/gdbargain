@@ -1,6 +1,10 @@
 package com.gdbargain.product.service.impl;
 
+import com.gdbargain.common.to.SkuReductionTo;
+import com.gdbargain.common.to.SpuBoundsTo;
+import com.gdbargain.common.utils.R;
 import com.gdbargain.product.entity.*;
+import com.gdbargain.product.feign.CouponSpuFeignService;
 import com.gdbargain.product.service.*;
 import com.gdbargain.product.vo.*;
 import org.springframework.beans.BeanUtils;
@@ -45,6 +49,9 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
     @Autowired
     SkuSaleAttrValueService skuSaleAttrValueService;
+
+    @Autowired
+    CouponSpuFeignService couponSpuFeignService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -97,6 +104,17 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         }).collect(Collectors.toList());
         productAttrValueService.saveProductAttr(collect);
 
+        //5.保存SPU积分信息 sms_spu_bounds
+        Bounds bounds = vo.getBounds();
+        SpuBoundsTo spuBoundsTo = new SpuBoundsTo();
+        BeanUtils.copyProperties(bounds, spuBoundsTo);
+        spuBoundsTo.setSpuId(infoEntity.getId());
+        //传给远程调用服务的service
+        R r = couponSpuFeignService.saveSpuBounds(spuBoundsTo);
+        if(r.getCode() != 0){
+            log.error("远程保存SPU积分信息失败");
+        }
+
         // 5.SPU对应的SKU信息
         List<Skus> skus = vo.getSkus();
         /**
@@ -147,6 +165,14 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
                 skuSaleAttrValueService.saveBatch(skuSaleAttrValueEntities);
 
                 // 4)SKU的优惠/满减信息：sms_sku_ladder:这一步要操作远程服务
+                SkuReductionTo skuReductionTo = new SkuReductionTo();
+                BeanUtils.copyProperties(sku, skuReductionTo);
+                skuReductionTo.setSkuId(skuId);
+                R r1 = couponSpuFeignService.saveSkuReduction(skuReductionTo);
+                if(r1.getCode() != 0){
+                    log.error("远程保存SKU优惠信息失败");
+                }
+
             });
         }
 
