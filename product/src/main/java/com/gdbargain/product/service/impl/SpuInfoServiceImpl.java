@@ -11,6 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ import com.gdbargain.common.utils.Query;
 
 import com.gdbargain.product.dao.SpuInfoDao;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 
 @Service("spuInfoService")
@@ -151,6 +153,9 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
                     skuImagesEntity.setImgUrl(img.getImgUrl());
                     skuImagesEntity.setDefaultImg(img.getDefaultImg());
                     return skuImagesEntity;
+                }).filter((item)->{
+                    //返回true就是需要，false就是剔除
+                    return !StringUtils.isEmpty(item.getImgUrl());
                 }).collect(Collectors.toList());
                 skuImagesService.saveBatch(imagesEntities);
 
@@ -168,9 +173,13 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
                 SkuReductionTo skuReductionTo = new SkuReductionTo();
                 BeanUtils.copyProperties(sku, skuReductionTo);
                 skuReductionTo.setSkuId(skuId);
-                R r1 = couponSpuFeignService.saveSkuReduction(skuReductionTo);
-                if(r1.getCode() != 0){
-                    log.error("远程保存SKU优惠信息失败");
+                //如果满减信息有问题，就不需要发送远程请求了
+                if(skuReductionTo.getFullCount() > 0 ||
+                        skuReductionTo.getFullPrice().compareTo(new BigDecimal("0")) == 1){
+                    R r1 = couponSpuFeignService.saveSkuReduction(skuReductionTo);
+                    if(r1.getCode() != 0){
+                        log.error("远程保存SKU优惠信息失败");
+                    }
                 }
 
             });
