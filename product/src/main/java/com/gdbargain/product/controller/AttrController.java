@@ -1,11 +1,14 @@
 package com.gdbargain.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import com.gdbargain.product.entity.AttrEntity;
 import com.gdbargain.common.utils.PageUtils;
 import com.gdbargain.common.utils.R;
+import com.gdbargain.product.entity.ProductAttrValueEntity;
+import com.gdbargain.product.service.ProductAttrValueService;
 import com.gdbargain.product.vo.AttrRespVO;
 import com.gdbargain.product.vo.AttrVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,15 @@ import com.gdbargain.product.service.AttrService;
 public class AttrController {
     @Autowired
     private AttrService attrService;
+
+    @Autowired
+    ProductAttrValueService attrValueService;
+
+    @GetMapping("/base/listforspu/{spuId}")
+    public R baseAttrListForSpu(@PathVariable("spuId") Long spuId){
+        List<ProductAttrValueEntity> entities = attrValueService.baseAttrListForSpu(spuId);
+        return R.ok().put("data", entities);
+    }
 
     /**
      * /product/attr/base/list/
@@ -82,6 +94,18 @@ public class AttrController {
     @RequestMapping("/update")
     public R update(@RequestBody AttrVO attr){
 		attrService.updateAttr(attr);
+
+        return R.ok();
+    }
+
+    /**
+     * 修改
+     */
+    @PostMapping("/update/{spuId}")
+    public R updateSpuAttr(@PathVariable("spuId")Long spuId,
+                           @RequestBody List<ProductAttrValueEntity> entities){
+
+        attrValueService.updateSpuAttr(spuId, entities);
 
         return R.ok();
     }
