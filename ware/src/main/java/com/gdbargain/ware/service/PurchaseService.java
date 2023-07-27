@@ -5,6 +5,7 @@ import com.gdbargain.common.utils.PageUtils;
 import com.gdbargain.ware.entity.PurchaseEntity;
 import com.gdbargain.ware.vo.MergeVo;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,5 +22,7 @@ public interface PurchaseService extends IService<PurchaseEntity> {
     PageUtils queryPageUnreceive(Map<String, Object> params);
 
     void mergePurchase(MergeVo mergeVo);
+
+    void received(List<Long> ids);
 }
 

@@ -2,6 +2,7 @@ package com.gdbargain.ware.controller;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import com.gdbargain.ware.vo.MergeVo;
@@ -27,6 +28,13 @@ import com.gdbargain.common.utils.R;
 public class PurchaseController {
     @Autowired
     private PurchaseService purchaseService;
+
+    //工作人员手机APP：领取采购单
+    @PostMapping("/received")
+    public R  received(@RequestBody List<Long> ids){
+        purchaseService.received(ids);
+        return R.ok();
+    }
 
     //合并
     @PostMapping("/merge")
