@@ -22,5 +22,6 @@
         <module>common</module>
         <module>gateway</module>
         <module>gdthird-party</module>
+        <module>es</module>
     </modules>
 </project>

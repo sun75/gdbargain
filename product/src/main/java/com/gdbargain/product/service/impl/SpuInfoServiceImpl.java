@@ -2,6 +2,7 @@ package com.gdbargain.product.service.impl;
 
 import com.gdbargain.common.to.SkuReductionTo;
 import com.gdbargain.common.to.SpuBoundsTo;
+import com.gdbargain.common.to.es.SkuEsModel;
 import com.gdbargain.common.utils.R;
 import com.gdbargain.product.entity.*;
 import com.gdbargain.product.feign.CouponSpuFeignService;
@@ -12,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -54,6 +53,12 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
     @Autowired
     CouponSpuFeignService couponSpuFeignService;
+
+    @Autowired
+    BrandService brandService;
+
+    @Autowired
+    CategoryService categoryService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -228,6 +233,65 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         IPage<SpuInfoEntity> page = this.page(new Query<SpuInfoEntity>().getPage(params), wrapper);
         return new PageUtils(page);
 
+    }
+
+    /**
+     * 商品上架
+     * @param spuId
+     */
+    @Override
+    public void up(Long spuId) {
+
+        //1.查出当前spuId对应的所有SKU信息，品牌名字
+        List<SkuInfoEntity> skus = skuInfoService.getSkusById(spuId);
+
+        //todo 4查询当前sku的所有可以被检索的规格属性
+        List<ProductAttrValueEntity> baseAttrs = productAttrValueService.baseAttrListForSpu(spuId);
+        List<Long> attrIds = baseAttrs.stream().map((attr) -> {
+            return attr.getAttrId();
+        }).collect(Collectors.toList());
+        List<Long> searchAttrIds =  attrService.selectSearchAttrIds(attrIds);
+        HashSet<Long> idSet = new HashSet<>(searchAttrIds);
+        List<SkuEsModel.Attr> attrsList = baseAttrs.stream().filter(item -> {
+            return idSet.contains(item.getAttrId());
+        }).map(item->{
+            SkuEsModel.Attr skuAttrs = new SkuEsModel.Attr();
+            BeanUtils.copyProperties(item, skuAttrs);
+            return skuAttrs;
+        }).collect(Collectors.toList());
+
+
+        //2.封装每个sku的信息
+        List<SkuEsModel> upProducts = skus.stream().map(sku -> {
+
+            //组装需要的数据
+            SkuEsModel skuEsModel = new SkuEsModel();
+            BeanUtils.copyProperties(sku, skuEsModel);
+            //SkuInfoEntity和SkuEsModel里面的属性找出不同的，进行处理
+            skuEsModel.setSkuPrice(sku.getPrice());
+            skuEsModel.setSkuImg(sku.getSkuDefaultImg());
+            //todo 1发送远程调用，是否有库存
+
+            //todo 2hotscore，默认刚上架是0
+            skuEsModel.setHotScore(0L);
+
+            //todo 3查询品牌和分类的名字信息
+            BrandEntity brandEntity = brandService.getById(skuEsModel.getBrandId());
+
+            skuEsModel.setBrandName(brandEntity.getName());
+            skuEsModel.setBrandName(brandEntity.getLogo());
+
+            CategoryEntity categoryEntity = categoryService.getById(skuEsModel.getCatalogId());
+            skuEsModel.setCatalogName(categoryEntity.getName());
+            //设置检索属性
+            skuEsModel.setAttrs(attrsList);
+
+
+
+            return skuEsModel;
+        }).collect(Collectors.toList());
+
+        //todo 5发送给es进行保存
     }
 
 }

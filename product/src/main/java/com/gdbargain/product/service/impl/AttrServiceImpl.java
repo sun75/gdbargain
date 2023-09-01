@@ -260,5 +260,14 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         return pageUtils;
     }
 
+    /**
+     * 在所有的指定集合里面，挑出所有的检索属性
+     * select attr_id from pms_attr where attr_id in (?) and search_type = 1
+     */
+    @Override
+    public List<Long> selectSearchAttrIds(List<Long> attrIds) {
+        return baseMapper.selectSearchAttrIds(attrIds);
+    }
+
 
 }

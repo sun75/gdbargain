@@ -27,6 +27,14 @@ public class SpuInfoController {
     @Autowired
     private SpuInfoService spuInfoService;
 
+    //商品上架：非冗余数据存储，使用ES
+    @PostMapping("/{spuId}/up")
+    public R spuUp(@PathVariable("spuId") Long spuId){
+        spuInfoService.up(spuId);
+
+        return R.ok();
+    }
+
     /**
      * 列表
      */
