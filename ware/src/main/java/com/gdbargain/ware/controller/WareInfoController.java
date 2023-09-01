@@ -1,14 +1,12 @@
 package com.gdbargain.ware.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
+import com.gdbargain.ware.vo.SkuHasStockVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.gdbargain.ware.entity.WareInfoEntity;
 import com.gdbargain.ware.service.WareInfoService;
@@ -29,6 +27,17 @@ import com.gdbargain.common.utils.R;
 public class WareInfoController {
     @Autowired
     private WareInfoService wareInfoService;
+
+    /**
+     * 查询sku是否有库存
+     * @RequestBody List<Long> skuIds:表示将请求体里面的数据，转换成List<Long>集合
+     */
+    @PostMapping("/hasStock")
+    public R getSkuHasStock(@RequestBody List<Long> skuIds){
+        List<SkuHasStockVo> vos = wareInfoService.getSkuHasStock(skuIds);
+        return R.ok().put("data", vos);
+    }
+
 
     /**
      * 列表

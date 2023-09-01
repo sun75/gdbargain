@@ -1,7 +1,12 @@
 package com.gdbargain.ware.service.impl;
 
+import com.gdbargain.ware.vo.SkuHasStockVo;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -33,6 +38,19 @@ public class WareInfoServiceImpl extends ServiceImpl<WareInfoDao, WareInfoEntity
                 new Query<WareInfoEntity>().getPage(params),wrapper);
 
         return new PageUtils(page);
+    }
+
+    @Override
+    public List<SkuHasStockVo> getSkuHasStock(List<Long> skuIds) {
+        List<SkuHasStockVo> collect = skuIds.stream().map(skuId-> {
+            SkuHasStockVo vo = new SkuHasStockVo();
+            //查询SKU的总库存量 select sum(stock-stock_locked) from `wms_ware_sku` where sku_id=1
+            long count = baseMapper.getSKuStock(skuId);
+            vo.setSkuId(skuId);
+            vo.setHasStock(count()>0);
+            return vo;
+        }).collect(Collectors.toList());
+        return collect;
     }
 
 }
