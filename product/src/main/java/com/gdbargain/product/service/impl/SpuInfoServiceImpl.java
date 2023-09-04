@@ -2,6 +2,7 @@ package com.gdbargain.product.service.impl;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
+import com.gdbargain.common.constant.SpuStatusEnum;
 import com.gdbargain.common.to.SkuHasStockVo;
 import com.gdbargain.common.to.SkuReductionTo;
 import com.gdbargain.common.to.SpuBoundsTo;
@@ -9,6 +10,7 @@ import com.gdbargain.common.to.es.SkuEsModel;
 import com.gdbargain.common.utils.R;
 import com.gdbargain.product.entity.*;
 import com.gdbargain.product.feign.CouponSpuFeignService;
+import com.gdbargain.product.feign.SearchFeignService;
 import com.gdbargain.product.feign.WareFeignService;
 import com.gdbargain.product.service.*;
 import com.gdbargain.product.vo.*;
@@ -66,6 +68,9 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
     @Autowired
     WareFeignService wareFeignService;
+
+    @Autowired
+    SearchFeignService searchFeignService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -327,7 +332,16 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
             return skuEsModel;
         }).collect(Collectors.toList());
 
-        //todo 5发送给es进行保存
+        //todo 5发送给es进行保存,保存完之后，商品上架功能就结束了：保存完之后，商品可以在ES检索
+        R r = searchFeignService.productStatusUp(upProducts);
+        if(r.getCode() == 0){
+            //远程调用成功
+            //todo 6修改当前spu_status
+             baseMapper.updateSpuStatus(spuId, SpuStatusEnum.SPU_UP.getCode());
+        }else{
+            //远程调用失败
+            //重复调用，接口幂等性，重试机制
+        }
     }
 
 }
