@@ -12,7 +12,7 @@ import java.util.List;
  * @author: shh
  * @createTime: 2023/9/411:34
  */
-@FeignClient("/es")
+@FeignClient("es")
 public interface SearchFeignService {
     @PostMapping("/search/save/product")
     R productStatusUp(@RequestBody List<SkuEsModel> skuEsModels);
