@@ -34,7 +34,7 @@ public class ElasticSaveController {
             log.error("商品上架错误:{}", e);
             return R.error(BizCodeEnum.PRODUCT_UP_EXECPTION.getCode(), BizCodeEnum.PRODUCT_UP_EXECPTION.getMsg());
         }
-        if(b){
+        if(!b){
             return R.ok();
         }else{
             return R.error(BizCodeEnum.PRODUCT_UP_EXECPTION.getCode(), BizCodeEnum.PRODUCT_UP_EXECPTION.getMsg());

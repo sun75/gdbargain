@@ -19,6 +19,6 @@ public interface WareInfoService extends IService<WareInfoEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
 
-    List<SkuHasStockVo> getSkuHasStock(List<Long> skuIds);
+    List<SkuHasStockVo>  getSkuHasStock(List<Long> skuIds);
 }
 
