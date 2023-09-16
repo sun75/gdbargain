@@ -40,6 +40,11 @@ public class ProductApplicationTests {
     StringRedisTemplate stringRedisTemplate;
 
     @Test
+    public void testDev(){
+        System.out.println("dev.....");
+    }
+
+    @Test
     public void testStringRedisTemplate(){
         ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
         ops.set("hello", "world" + UUID.randomUUID().toString());
