@@ -15,23 +15,37 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest
-class ProductApplicationTests {
+public class ProductApplicationTests {
 
     @Autowired
     BrandService brandService;
 
     @Autowired
     CategoryService categoryService;
+
+    @Autowired
+    StringRedisTemplate stringRedisTemplate;
+
+    @Test
+    public void testStringRedisTemplate(){
+        ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
+        ops.set("hello", "world" + UUID.randomUUID().toString());
+        String hello = ops.get("hello");
+        System.out.println("之前保存的数据：" + hello);
+    }
 
     //对CategoryService里面的接口进行单元测试
     //1.先注入
@@ -43,7 +57,7 @@ class ProductApplicationTests {
     }
 
     @Test
-    void contextLoads() {
+    public void contextLoads() {
 //        BrandEntity brandEntity = new BrandEntity();
 //        brandEntity.setName("华为");
 //        brandService.save(brandEntity);
@@ -56,7 +70,7 @@ class ProductApplicationTests {
         });
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     public void upload(){
         // Endpoint以华东1（杭州）为例，其它Region请按实际情况填写。
         String endpoint = "oss-cn-beijing.aliyuncs.com";
