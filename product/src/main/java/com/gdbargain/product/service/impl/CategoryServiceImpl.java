@@ -2,6 +2,8 @@ package com.gdbargain.product.service.impl;
 
 import com.gdbargain.product.service.CategoryBrandRelationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,6 +30,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     @Autowired
     CategoryBrandRelationService categoryBrandRelationService;
 
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<CategoryEntity> page = this.page(
@@ -44,6 +49,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     //map()里面的子菜单，setChildren，设置子菜单
     //getChildrens()递归获取每个子菜单
     //sort：找到父菜单之后，进行排序
+    @Cacheable({"categorytest"})
     @Override
     public List<CategoryEntity> listWithTree() {
         //1.查出所有分类
