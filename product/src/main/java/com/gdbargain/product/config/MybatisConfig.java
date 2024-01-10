@@ -19,7 +19,7 @@ public class MybatisConfig {
     @Bean
     public PaginationInterceptor paginationInterceptor(){
         PaginationInterceptor interceptor = new PaginationInterceptor();
-        //设置请求的页面大鱼最大页后操作，true调回到首页，false继续请求，默认false
+        //设置请求的页面 > 最大页 之后操作，true调回到首页，false继续请求，默认false
         interceptor.setOverflow(true);
         //设置最大但也限制数量，默认500条，-1不受限制
         interceptor.setLimit(1000);
