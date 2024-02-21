@@ -9,7 +9,7 @@
     <!--名称显示-->
     <name>goodbargainshop</name>
     <description>聚合服务</description>
-    <!--  pom用于聚合工程  -->
+    <!--pom用于聚合工程-->
     <packaging>pom</packaging>
     <!-- 将所有小模块都聚合起来   -->
     <modules>
