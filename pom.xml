@@ -6,7 +6,7 @@
 
     <artifactId>goodbargainshop</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <!--    名称显示-->
+    <!--名称显示-->
     <name>goodbargainshop</name>
     <description>聚合服务</description>
     <!--  pom用于聚合工程  -->
