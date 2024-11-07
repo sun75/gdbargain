@@ -53,7 +53,7 @@ public class PurchaseServiceImpl extends ServiceImpl<PurchaseDao, PurchaseEntity
         //status为0/1，表示采购单是新建/刚分配
         IPage<PurchaseEntity> page = this.page(
                 new Query<PurchaseEntity>().getPage(params),
-                new QueryWrapper<PurchaseEntity>().eq("status", 0).eq("status", 1)
+                new QueryWrapper<PurchaseEntity>().eq("status", 0).or().eq("status", 1)
         );
 
         return new PageUtils(page);
@@ -139,6 +139,7 @@ public class PurchaseServiceImpl extends ServiceImpl<PurchaseDao, PurchaseEntity
 //        flag = false;
 //    }
 //});
+    @Transactional
     @Override
     public void done(PurchaseDoneVo doneVo) {
         Long id = doneVo.getId();
@@ -155,7 +156,9 @@ public class PurchaseServiceImpl extends ServiceImpl<PurchaseDao, PurchaseEntity
                 detailEntity.setStatus(PurchaseDetailStatusEnum.FINISHED.getCode());
 
                 //3.将成功的采购进行入库：对相应的采购增加数量
+                //3.1入库之前，查出采购项
                 PurchaseDetailEntity entity = purchaseDetailService.getById(i.getItemId());
+                //3.2表示当前商品给哪个仓库入几个的意思
                 wareSkuService.addStock(entity.getSkuId(), entity.getWareId(), entity.getSkuNum());
             }
             detailEntity.setId(i.getItemId());

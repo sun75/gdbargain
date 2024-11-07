@@ -21,8 +21,8 @@ public class GDShopCorsConfiguration {
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.addAllowedOrigin("*");
         corsConfiguration.addAllowedMethod("*");
-        corsConfiguration.setAllowCredentials(true);
-
+        corsConfiguration.setAllowCredentials(true);// 是否允许携带cookie跨域
+        // 任意url都要进行跨域配置
         source.registerCorsConfiguration("/**", corsConfiguration);
         return new CorsWebFilter(source);
     }

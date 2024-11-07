@@ -51,6 +51,9 @@ public class SkuFullReductionServiceImpl extends ServiceImpl<SkuFullReductionDao
         //SKU的优惠/满减信息：sms_sku_ladder:这一步要操作远程服务
         //1.sms-->sms_sku_ladder,sms_sku_full_reduction,sms_member_price
         //sms_sku_ladder,因为属性没有一一对应起来，所以不可以直接用BeanUtils.copyProperties()
+        /**
+         * sms_sku_ladder是阶梯价格，表示满几件减多少
+         */
         SkuLadderEntity skuLadderEntity = new SkuLadderEntity();
         skuLadderEntity.setSkuId(skuReductionTo.getSkuId());
         skuLadderEntity.setDiscount(skuReductionTo.getDiscount());

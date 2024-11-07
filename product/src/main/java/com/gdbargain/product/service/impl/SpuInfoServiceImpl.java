@@ -137,7 +137,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         // 5.SPU对应的SKU信息
         List<Skus> skus = vo.getSkus();
         /**
-         * 因为每个sku都会调用sku_images，所以不使用stream，使用佛reach
+         * 因为每个sku都会调用sku_images，所以不使用stream，使用 for each
            skus.stream().map((sku) -> {
 
            }).collect(Collectors.toList())
@@ -150,20 +150,29 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
                 skuInfoEntity.setCatalogId(infoEntity.getCatalogId());
                 skuInfoEntity.setSaleCount(0L);
                 skuInfoEntity.setSpuId(infoEntity.getId());
-
-                String defaultImg = "";
+                skuInfoEntity.setSkuDefaultImg("xxx");
+                /**
+                 * 因为没有传Image，所以直接将image设为string类型，传""值
+                 *
+                 *
+                 String defaultImg = "";
                 for(Images img : sku.getImages()){
                     // 1 表示默认值
                     if(img.getDefaultImg() == 1){
                         defaultImg = img.getImgUrl();
                     }
                 }
-                skuInfoEntity.setSkuDefaultImg(defaultImg);
-                // 1)SKU的基本信息：sku_info
+                 skuInfoEntity.setSkuDefaultImg(defaultImg);
+                 */
+                // 5.1)SKU的基本信息：sku_info
                 skuInfoService.saveSkuInfo(skuInfoEntity);
 
-                // 2)SKU的图片信息：sku_images
-                Long skuId = skuInfoEntity.getSkuId();
+                // 5.2)SKU的图片信息：sku_images
+                Long skuId = skuInfoEntity.getSkuId();  // skuId自增主键
+                /**
+                 * 图片信息暂时不保存
+                 *
+
                 List<SkuImagesEntity> imagesEntities = sku.getImages().stream().map((img) -> {
                     SkuImagesEntity skuImagesEntity = new SkuImagesEntity();
                     skuImagesEntity.setSkuId(skuId);
@@ -176,7 +185,8 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
                 }).collect(Collectors.toList());
                 skuImagesService.saveBatch(imagesEntities);
 
-                // 3)SKU销售属性信息：sku_sale_attr_value
+                */
+                // 5.3)SKU销售属性信息：sku_sale_attr_value
                 List<Attr> attrs = sku.getAttr();
                 List<SkuSaleAttrValueEntity> skuSaleAttrValueEntities = attrs.stream().map((attr) -> {
                     SkuSaleAttrValueEntity attrValueEntity = new SkuSaleAttrValueEntity();
@@ -186,7 +196,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
                 }).collect(Collectors.toList());
                 skuSaleAttrValueService.saveBatch(skuSaleAttrValueEntities);
 
-                // 4)SKU的优惠/满减信息：sms_sku_ladder:这一步要操作远程服务
+                // 5.4)SKU的优惠/满减信息：sms_sku_ladder:这一步要操作远程服务
                 SkuReductionTo skuReductionTo = new SkuReductionTo();
                 BeanUtils.copyProperties(sku, skuReductionTo);
                 skuReductionTo.setSkuId(skuId);

@@ -76,8 +76,17 @@ public class ProductApplicationTests {
         List<BrandEntity> list = brandService
                 .list(new QueryWrapper<BrandEntity>().eq("brand_id", 1));
         list.forEach((item) -> {
+            System.out.println("~~~~~~~~~~~");
             System.out.println(item);
         });
+    }
+
+    @Test
+    public void updateBrandDescription(){
+        BrandEntity brandEntity = new BrandEntity();
+        brandEntity.setBrandId(1L);
+        brandEntity.setDescript("华为pro");
+        brandService.updateById(brandEntity);
     }
 
     @Test

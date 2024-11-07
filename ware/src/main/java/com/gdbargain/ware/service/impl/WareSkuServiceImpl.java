@@ -63,7 +63,9 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
             //远程查询SKU名字，如果失败，整个事务无需回滚
             //1。自己catch异常
             try {
+                //因为远程调用返回的是json，所以用R接收，进行转
                 R info = productFeignService.info(skuId);
+                //因为接收过来的是Object对象，将其转成Map格式
                 Map<String, Object> data = (Map<String, Object>) info.get("skuInfo ");
                 if(info.getCode() == 0){
                     wareSkuEntity.setSkuName((String) data.get("skuName"));

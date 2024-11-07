@@ -14,10 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public interface ProductFeignService {
 
     /**
-     * /product/skuinfo/info/{skuId} ：直接让后台指定服务发请求
-     * /api/product/skuinfo/info/{skuId}: 所有请求过网关
-     * @param skuId
-     * @return
+     * @FeignClient("product")--->/product/skuinfo/info/{skuId} ：直接让后台指定服务发请求
+     * @FeignClient("gateway")--->/api/product/skuinfo/info/{skuId}: 所有请求过网关
      */
     @RequestMapping("/product/skuinfo/info/{skuId}")
     R info(@PathVariable("skuId") Long skuId);

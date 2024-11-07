@@ -39,7 +39,7 @@ public class CouponController {
     @Value("${coupon.user.age}")
     private String age;
 
-    @RequestMapping("/test")
+    @RequestMapping({"/test"})
     public R test(){
         return R.ok().put("name", name).put("age", age);
     }

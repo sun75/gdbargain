@@ -52,6 +52,15 @@ public class CategoryController {
         return R.ok().put("data", entities);
     }
 
+    @RequestMapping("/list/miaomiao")
+    public List<CategoryEntity> miaomiao(){
+        List<CategoryEntity> entities = categoryService.listWithTree();
+
+        System.out.println("----------------");
+        System.out.println(entities);
+        return entities;
+    }
+
 
     /**
      * 信息

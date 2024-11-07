@@ -67,7 +67,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         BeanUtils.copyProperties(attr, attrEntity);
         this.save(attrEntity);
         //2.保存关联关系
-        if(attr.getAttrGroupId() != null){
+        if(attr.getAttrType()==1 && attr.getAttrGroupId() != null){
             AttrAttrgroupRelationEntity relationEntity = new AttrAttrgroupRelationEntity();
             relationEntity.setAttrId(attrEntity.getAttrId());
             relationEntity.setAttrGroupId(attr.getAttrGroupId());
@@ -79,7 +79,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     public PageUtils queryBaseAttrPage(Map<String, Object> params, Long catelogId, String type) {
         QueryWrapper<AttrEntity> queryWrapper = new QueryWrapper<AttrEntity>().eq("attr_type", "base".equalsIgnoreCase(type)?1:0);
         if(catelogId != 0){
-            queryWrapper.eq("catelogId",catelogId);
+            queryWrapper.eq("catelog_id",catelogId);
         }
         String key = (String) params.get("key");
         if(!StringUtils.isEmpty(key)){
@@ -227,7 +227,8 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         //2.1找到当前分类下的其他分组
         List<AttrGroupEntity> group =
                 attrGroupDao.selectList(
-                        new QueryWrapper<AttrGroupEntity>().eq("catelog_id", catelogId).ne("attr_group_id", attrgroupId));
+                        new QueryWrapper<AttrGroupEntity>().eq("catelog_id", catelogId));  //因为ne()查不出自己已经关联的属性
+//                        new QueryWrapper<AttrGroupEntity>().eq("catelog_id", catelogId).ne("attr_group_id", attrgroupId));
         List<Long> collect = group.stream().map((e) -> {
             return e.getAttrGroupId();
         }).collect(Collectors.toList());
@@ -241,7 +242,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         }).collect(Collectors.toList());
         //2.3从当前属性中移除这些属性
         //查询条件
-        QueryWrapper<AttrEntity> wrapper = new QueryWrapper<AttrEntity>().eq("catelog_id", catelogId);
+        QueryWrapper<AttrEntity> wrapper = new QueryWrapper<AttrEntity>().eq("catelog_id", catelogId).eq("attr_type",1);
         //不是空才来拼装
         if(attrIds != null && attrIds.size() > 0){
             wrapper.notIn("attr_id", attrIds);
